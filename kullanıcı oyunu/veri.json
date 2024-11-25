@@ -1,0 +1,29 @@
+{
+    "kullanicilar": [
+        {
+            "user": "aziz",
+            "para": -10,
+            "envantory": {
+                "Silah": 1
+            }
+        },
+        {
+            "user": "azaz",
+            "para": -10,
+            "envantory": null
+        },
+        {
+            "user": "at",
+            "para": 0,
+            "envantory": {
+                "Bomba": 1,
+                "Kask": 1
+            }
+        },
+        {
+            "user": "a",
+            "para": 10,
+            "envantory": null
+        }
+    ]
+}
