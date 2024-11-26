@@ -3,30 +3,31 @@ name: Build with Buildozer
 on:
   push:
     branches:
-      - main  # main branch'ine push yapıldığında tetiklenecek
+      - main
   pull_request:
     branches:
-      - main  # main branch'ine yapılan pull requestlerde tetiklenecek
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Ubuntu üzerinde çalışacak
+    runs-on: ubuntu-latest
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v2  # Depoyu çekme adımı
+      uses: actions/checkout@v2
 
     - name: Set up Python
-      uses: actions/setup-python@v2  # Python ortamını kurma
+      uses: actions/setup-python@v2
       with:
-        python-version: '3.9'  # Python 3.x sürümünü kullan
+        python-version: '3.12'  # Python 3.12 kullan
 
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential python3-dev python3-pip
-        pip install buildozer  # Buildozer'ı kurma
+        sudo apt-get install -y build-essential python3-dev python3-pip python3-distutils
+        pip install setuptools wheel cython  # Cython'ı yükle
+        pip install buildozer
 
     - name: Build with Buildozer
       run: |
-        buildozer android debug  # Android için debug build yapma
+        buildozer android debug
