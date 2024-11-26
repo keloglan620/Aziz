@@ -1,5 +1,3 @@
-# Sample repository at https://github.com/Novfensec/SAMPLE-KIVYMD-APP
-
 name: CI - Android
 
 on:
@@ -15,27 +13,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Depoyu çek
       - uses: actions/checkout@v4
 
-      # Used to cache dependencies with a timeout
+      # Bağımlılıkları önbelleğe almak için tarih al
       - name: Get Date
         id: get-date
         run: |
           echo "date=$(date -u '+%Y%m%d')" >> $GITHUB_ENV
         shell: bash
 
+      # Buildozer global dizinini önbelleğe al
       - name: Cache Buildozer global directory
         uses: actions/cache@v3
         with:
           path: .buildozer_global
           key: buildozer-global-${{ hashFiles('buildozer.spec') }}
 
-      - uses: actions/cache@v3
+      # Buildozer dizinini önbelleğe al
+      - name: Cache Buildozer directory
+        uses: actions/cache@v3
         with:
           path: .buildozer
           key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
 
-      # Install dependencies
+      # Gerekli bağımlılıkları yükle
       - name: Install dependencies
         run: |
           sudo apt update
@@ -52,13 +54,11 @@ jobs:
             libavformat-dev \
             libavcodec-dev \
             libunwind-dev \
-            zlib1g-dev
-          sudo apt-get install -y \
+            zlib1g-dev \
             libsqlite3-dev \
             sqlite3 \
             bzip2 \
             libbz2-dev \
-            zlib1g-dev \
             openssl \
             libgdbm-dev \
             libgdbm-compat-dev \
@@ -67,8 +67,7 @@ jobs:
             uuid-dev \
             libgstreamer1.0 \
             gstreamer1.0-plugins-base \
-            gstreamer1.0-plugins-good
-          sudo apt-get install -y \
+            gstreamer1.0-plugins-good \
             zip \
             unzip \
             autoconf \
@@ -82,34 +81,36 @@ jobs:
             libssl-dev \
             automake
 
-      # Set up Java 17 required by Gradle
+      # Gradle için gereken Java 17'yi kur
       - name: Setup Java 17 required by Gradle
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'  # or 'zulu', 'liberica', etc.
+          distribution: 'temurin'  # veya 'zulu', 'liberica', vb.
           java-version: '17'
 
-      # Set up Python
+      # Python 3.8'i kur (gerekirse sürümünü değiştirebilirsiniz)
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.8' #set your python version
+          python-version: '3.8'
 
-      # Install pip dependencies
+      # Pip bağımlılıklarını yükle
       - name: Install pip dependencies
         run: |
           pip install --upgrade pip
           pip install buildozer cython==0.29.33
 
-      # Build with Buildozer
+      # Buildozer ile derleme (Debug APK)
       - name: Build with Buildozer
         id: buildozer
         run: |
           yes | buildozer -v android debug
+        # Yayın sürümü (release) için şunu kullanabilirsiniz:
         # yes | buildozer -v android release
-        # run this for generating aab (Android App Bundle) [Required by google play]
+        # Android App Bundle (AAB) oluşturmak için şu satırı açabilirsiniz:
+        # yes | buildozer -v android release aab
 
-      # Upload artifacts
+      # APK/AAB'yi artefakt olarak yükle
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -117,3 +118,7 @@ jobs:
           path: |
             bin/*.apk
             bin/*.aab
+
+      # İsteğe bağlı: Yayın bildirimleri gönderme veya mağazaya dağıtım, gerekirse
+      # - name: Send deployment notification
+      #   run: echo "Yayın bildirimi burada olacak"
