@@ -28,6 +28,12 @@ jobs:
         pip install setuptools wheel cython  # Cython'ı yükle
         pip install buildozer
 
+    - name: Install Android SDK
+      run: |
+        sudo apt-get install -y openjdk-8-jdk  # Java Geliştirme Kitini yükle
+        sudo apt-get install -y android-sdk  # Android SDK'yı yükle
+        echo "y" | android update sdk --no-ui --filter platform-tools,build-tools-30.0.3,android-29  # Build tools ve SDK'yı güncelle
+
     - name: Build with Buildozer
       run: |
         buildozer android debug
