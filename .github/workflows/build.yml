@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2  # Python ortamını kurma
       with:
-        python-version: '3.x'  # Python 3.x sürümünü kullan
+        python-version: '3.9'  # Python 3.x sürümünü kullan
 
     - name: Install dependencies
       run: |
