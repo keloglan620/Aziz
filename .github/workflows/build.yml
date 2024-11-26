@@ -1,19 +1,32 @@
+name: Build with Buildozer
+
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main  # main branch'ine push yapıldığında tetiklenecek
+  pull_request:
+    branches:
+      - main  # main branch'ine yapılan pull requestlerde tetiklenecek
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build APK
-        with:
-          python-version: 3.8
-          buildozer-cmd: buildozer -v android debug
+    runs-on: ubuntu-latest  # Ubuntu üzerinde çalışacak
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: package
-          path: ./bin/*.apk
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v2  # Depoyu çekme adımı
+
+    - name: Set up Python
+      uses: actions/setup-python@v2  # Python ortamını kurma
+      with:
+        python-version: '3.x'  # Python 3.x sürümünü kullan
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential python3-dev python3-pip
+        pip install buildozer  # Buildozer'ı kurma
+
+    - name: Build with Buildozer
+      run: |
+        buildozer android debug  # Android için debug build yapma
